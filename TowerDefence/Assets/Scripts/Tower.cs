@@ -6,14 +6,15 @@ using UnityEngine.UI;
 
 public class Tower : MonoBehaviour
 {
-    public float health = 100f; 
-    public Text gameOverText;   
+    public float health = 100f;
+    public Text gameOverText;
+    public string mainMenuSceneName = "MainMenu"; // Name of the main menu scene
 
     void Start()
     {
         if (gameOverText != null)
         {
-            gameOverText.gameObject.SetActive(false); 
+            gameOverText.gameObject.SetActive(false);
         }
     }
 
@@ -24,7 +25,7 @@ public class Tower : MonoBehaviour
         if (health <= 0)
         {
             health = 0;
-            GameOver(); 
+            GameOver();
         }
     }
 
@@ -32,18 +33,20 @@ public class Tower : MonoBehaviour
     {
         if (gameOverText != null)
         {
-            gameOverText.gameObject.SetActive(true); 
+            gameOverText.gameObject.SetActive(true);
         }
 
-        
-        Invoke("ReturnToMainMenu", 3f); // 
+        // Return to the main menu after a delay
+        Invoke("ReturnToMainMenu", 3f);
     }
 
     private void ReturnToMainMenu()
     {
-        SceneManager.LoadScene("MainMenu"); 
+        // Load the main menu scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(mainMenuSceneName);
     }
 }
+
 
 
 

@@ -1,76 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    public float damage = 10f;   // Damage dealt per attack
-    public float attackRate = 1f; // Time between attacks
-    public float detectionRange = 10f; // Detection range for defenders
-    public float attackRange = 1.5f;   // Range within which enemies can attack
-    public Transform tower;  // Reference to the tower object
+    public float damage = 10f; // Damage dealt to defenders or tower
+    public float attackRate = 1f; // Rate at which enemies attack
+    public float detectionRange = 10f; // Range in which enemies detect defenders
+    public float attackRange = 1.5f; // Range in which enemies attack
+    public Transform tower;  // Reference to the tower
 
     private float nextAttackTime = 0f;
     private Transform target;
-    private HealthBar targetHealthBar;
-    private Tower towerScript;  // Reference to the Tower script
+    private HealthBar targetHealthBar; // Health component of defenders or tower
+    private Tower towerScript; // Tower script reference for health
 
     void Start()
     {
-        // Get the Tower script from the tower GameObject
-        if (tower != null)
-        {
-            towerScript = tower.GetComponent<Tower>();
-        }
+        towerScript = tower.GetComponent<Tower>(); // Assign the Tower script
     }
 
     void Update()
     {
         if (target != null)
         {
-            // Check if enemy is within attack range
+            // Check if the enemy is within attack range of the target (defender or tower)
             if (Vector3.Distance(transform.position, target.position) <= attackRange)
             {
                 if (Time.time >= nextAttackTime)
                 {
                     nextAttackTime = Time.time + 1f / attackRate;
-                    AttackDefender();
+                    Attack(targetHealthBar); // Attack defenders or the tower
                 }
             }
             else
             {
+                // Move towards the target if not in attack range
                 SetDestination(target.position);
             }
         }
         else
         {
-            // If no defender is nearby, move towards the tower
-            if (tower != null && Vector3.Distance(transform.position, tower.position) <= attackRange)
+            // No defender detected, move towards the tower
+            FindNearestDefender();
+            if (target == null)
             {
-                if (Time.time >= nextAttackTime)
-                {
-                    nextAttackTime = Time.time + 1f / attackRate;
-                    AttackTower();
-                }
-            }
-            else
-            {
+                // If no defenders found, head towards the tower
                 SetDestination(tower.position);
             }
-        }
-    }
-
-    private void AttackDefender()
-    {
-        if (targetHealthBar != null)
-        {
-            targetHealthBar.TakeDamage(damage);
-        }
-    }
-
-    private void AttackTower()
-    {
-        if (towerScript != null)
-        {
-            towerScript.TakeDamage(damage);
         }
     }
 
@@ -88,7 +69,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     closestDistance = distance;
                     target = collider.transform;
-                    targetHealthBar = target.GetComponent<HealthBar>();
+                    targetHealthBar = target.GetComponent<HealthBar>(); // Get the defender's health component
                 }
             }
         }
@@ -96,8 +77,30 @@ public class EnemyAI : MonoBehaviour
 
     private void SetDestination(Vector3 destination)
     {
-        // Moves the enemy towards the target position
+        // Move towards the target
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * 3f);
     }
-}
 
+    private void Attack(HealthBar targetHealthBar)
+    {
+        // Check if attacking a defender
+        if (targetHealthBar != null)
+        {
+            targetHealthBar.TakeDamage(damage);
+        }
+        else if (target == tower) // Check if attacking the tower
+        {
+            towerScript.TakeDamage(damage); // Damage the tower directly
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Tower"))
+        {
+            // Start attacking the tower when in range
+            target = tower;
+            targetHealthBar = null; // No health bar for the tower
+        }
+    }
+}
