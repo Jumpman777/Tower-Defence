@@ -35,7 +35,7 @@ public class GameTerrain : MonoBehaviour
 
         Mesh mesh = new Mesh();
 
-        GetComponent<MeshFilter>().mesh= mesh;
+        GetComponent<MeshFilter>().mesh = mesh;
 
         int triOffset = 0;
 

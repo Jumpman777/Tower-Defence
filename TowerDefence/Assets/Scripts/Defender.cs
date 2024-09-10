@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Defender : MonoBehaviour
 {
@@ -12,10 +13,13 @@ public class Defender : MonoBehaviour
     private HealthBar targetHealthBar; // Health bar of the target enemy
 
     private HealthBar healthBar; // Reference to this defender's health bar
+    private NavMeshAgent navMeshAgent; // Reference to the NavMeshAgent component
 
     void Start()
     {
         healthBar = GetComponent<HealthBar>(); // Get the HealthBar component attached to this defender
+        navMeshAgent = GetComponent<NavMeshAgent>(); // Get the NavMeshAgent component
+        navMeshAgent.speed = moveSpeed; // Set the speed of the NavMeshAgent
     }
 
     void Update()
@@ -29,16 +33,7 @@ public class Defender : MonoBehaviour
         // If there is a target but it's not in range, move towards it
         else if (target != null && !IsInRange(target))
         {
-            MoveTowardsTarget();
-        }
-    }
-
-    private void MoveTowardsTarget()
-    {
-        if (target != null)
-        {
-            Vector3 direction = (target.position - transform.position).normalized; // Calculate the direction to the target
-            transform.position += direction * moveSpeed * Time.deltaTime; // Move the defender towards the target
+            navMeshAgent.SetDestination(target.position); // Move towards the target using NavMesh
         }
     }
 
@@ -63,6 +58,9 @@ public class Defender : MonoBehaviour
         {
             target = other.transform;
             targetHealthBar = other.GetComponent<HealthBar>();
+
+            // Set the NavMeshAgent's destination to the enemy's position
+            navMeshAgent.SetDestination(target.position);
         }
     }
 
@@ -73,6 +71,9 @@ public class Defender : MonoBehaviour
         {
             target = null;
             targetHealthBar = null;
+
+            // Stop the NavMeshAgent from moving
+            navMeshAgent.ResetPath();
         }
     }
 
@@ -91,4 +92,3 @@ public class Defender : MonoBehaviour
         }
     }
 }
-
