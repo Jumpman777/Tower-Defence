@@ -1,13 +1,12 @@
 using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.AI;  // For NavMesh
 
 public class TerrainGenerator : MonoBehaviour
 {
     public int terrainWidth = 128;
     public int terrainHeight = 128;
     public GameObject tower;
-    public NavMeshSurface navMeshSurface; // Reference to NavMeshSurface
+    
 
     private Mesh mesh;
     private Vector3[] vertices;
@@ -16,25 +15,25 @@ public class TerrainGenerator : MonoBehaviour
 
     private void Start()
     {
-        rand = new System.Random();  // Seed the random number generator
+        rand = new System.Random();  
         GenerateTerrain();
-        navMeshSurface.BuildNavMesh(); // Build NavMesh after terrain is generated
+        
     }
 
     void GenerateTerrain()
     {
-        float noiseScale = Random.Range(10f, 30f); // Random noise scale (controls smoothness/spikiness)
-        float heightMultiplier = Random.Range(2f, 8f); // Random height multiplier (controls spikiness)
+        float noiseScale = Random.Range(10f, 30f); 
+        float heightMultiplier = Random.Range(2f, 8f); 
 
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
         vertices = new Vector3[(terrainWidth + 1) * (terrainHeight + 1)];
 
-        float offsetX = rand.Next(0, 10000);  // Random offset for Perlin noise
+        float offsetX = rand.Next(0, 10000);  
         float offsetZ = rand.Next(0, 10000);
 
-        // Generate the terrain using Perlin noise
+        
         for (int i = 0, z = 0; z <= terrainHeight; z++)
         {
             for (int x = 0; x <= terrainWidth; x++, i++)
@@ -44,7 +43,7 @@ public class TerrainGenerator : MonoBehaviour
             }
         }
 
-        // Create flat paths and the center
+        
         CreateFixedFlatPathsAndCenter();
 
         UpdateMesh();
@@ -52,21 +51,21 @@ public class TerrainGenerator : MonoBehaviour
 
     void CreateFixedFlatPathsAndCenter()
     {
-        // Flatten the center where the tower will be placed
+      
         int centerX = terrainWidth / 2;
         int centerZ = terrainHeight / 2;
-        int radius = 10; // Radius of the flat area for the center
+        int radius = 10; 
 
         for (int z = centerZ - radius; z <= centerZ + radius; z++)
         {
             for (int x = centerX - radius; x <= centerX + radius; x++)
             {
                 int index = z * (terrainWidth + 1) + x;
-                vertices[index].y = 0f; // Make the center flat
+                vertices[index].y = 0f; 
             }
         }
 
-        // Create 3 fixed paths to the center (no randomization)
+        
         CreateFlatPath(terrainWidth / 4, 0, centerX, centerZ);  // Path from bottom-left corner
         CreateFlatPath(terrainWidth / 4, terrainHeight, centerX, centerZ);  // Path from top-left corner
         CreateFlatPath(terrainWidth - terrainWidth / 4, terrainHeight, centerX, centerZ);  // Path from top-right corner

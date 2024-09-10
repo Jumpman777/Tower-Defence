@@ -13,9 +13,7 @@ GameObject:
   - component: {fileID: 1956550198881294987}
   - component: {fileID: 48462399515345817}
   - component: {fileID: 1087532798534528122}
-  - component: {fileID: 1950930562867433074}
   - component: {fileID: 2235262881791024985}
-  - component: {fileID: 5110949712206873340}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -134,33 +132,6 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: cae8e086e79c7d748b9294d59fe14258, type: 3}
   Healthbarsmoothing: 1
   DamageDuration: 1
---- !u!54 &1950930562867433074
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258919457848005304}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 2
 --- !u!114 &2235262881791024985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,25 +145,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tower: {fileID: 7262801412843420826, guid: 6170f16863498437f938a598d47cab33, type: 3}
---- !u!195 &5110949712206873340
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258919457848005304}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 1
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  moveSpeed: 3.5

@@ -1,56 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEngine.UI; // Add this for the UI elements
 
 public class DefenderSpawner : MonoBehaviour
 {
-    public GameObject defenderPrefab;
-    public int maxDefenders = 5;
-    private int currentDefenderCount = 0;
+    public GameObject defenderPrefab; // Reference to the defender prefab
+    public Transform terrain; // The terrain where defenders can be placed
+    public int maxDefenders = 5; // Maximum number of defenders allowed
+    private int currentDefenderCount = 0; // Current number of defenders
 
-    // Reference to the UI Text element to display remaining defenders
-    public Text defenderCountText;
+    public UIManager uiManager; // Reference to the UIManager
 
     private void Start()
     {
-        UpdateDefenderCountUI();
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0) && currentDefenderCount < maxDefenders)
+        // Initialize the UIManager reference if it's not set
+        if (uiManager == null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.CompareTag("Terrain"))
-                {
-                    SpawnDefender(hit.point);
-                }
-            }
+            uiManager = FindObjectOfType<UIManager>();
         }
     }
 
-    private void SpawnDefender(Vector3 position)
+    public void SpawnDefender(Vector3 position)
     {
-        Instantiate(defenderPrefab, position, Quaternion.identity);
-        currentDefenderCount++;
-        UpdateDefenderCountUI();
-    }
+        if (currentDefenderCount < maxDefenders)
+        {
+            GameObject defender = Instantiate(defenderPrefab, position, Quaternion.identity);
+            currentDefenderCount++;
+            uiManager.UpdateDefenderCountText(currentDefenderCount); // Update UI
 
-    private void UpdateDefenderCountUI()
-    {
-        defenderCountText.text = "Defenders Remaining: " + (maxDefenders - currentDefenderCount).ToString();
+            // Optional: Add any additional setup for the defender here
+        }
+        else
+        {
+            Debug.Log("Maximum number of defenders reached!");
+        }
     }
 
     public void OnDefenderDestroyed()
     {
-        currentDefenderCount--;
-        UpdateDefenderCountUI();
+        if (currentDefenderCount > 0)
+        {
+            currentDefenderCount--;
+            uiManager.UpdateDefenderCountText(currentDefenderCount); // Update UI
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 

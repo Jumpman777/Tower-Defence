@@ -1,25 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
+using UnityEngine.UI;
 
 public class Tower : MonoBehaviour
 {
-    public HealthBar healthBar;
+    public float health = 100f; 
+    public Text gameOverText;   
 
-    private void Start()
+    void Start()
     {
-        healthBar = GetComponent<HealthBar>();
-    }
-
-    public void TakeDamage(float damage)
-    {
-        healthBar.TakeDamage(damage);
-        if (healthBar.health <= 0)
+        if (gameOverText != null)
         {
-            // Handle tower destruction, game over, etc.
-            Destroy(gameObject);
-            Destroy(healthBar);
+            gameOverText.gameObject.SetActive(false); 
         }
     }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+
+        if (health <= 0)
+        {
+            health = 0;
+            GameOver(); 
+        }
+    }
+
+    private void GameOver()
+    {
+        if (gameOverText != null)
+        {
+            gameOverText.gameObject.SetActive(true); 
+        }
+
+        
+        Invoke("ReturnToMainMenu", 3f); // 
+    }
+
+    private void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu"); 
+    }
 }
+
+
+
 
